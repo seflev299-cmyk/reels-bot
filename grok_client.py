@@ -1,22 +1,23 @@
 # grok_client.py
-# Подключение к Grok API (xAI) через OpenAI-совместимый клиент
+# Подключение к Groq API через OpenAI-совместимый клиент
+# (Groq — это НЕ Grok от xAI, а отдельный сервис!)
 
 import os
 from openai import AsyncOpenAI
 from prompts import SYSTEM_PROMPT
 
-# Инициализация клиента Grok
+# Инициализация клиента Groq
 client = AsyncOpenAI(
     api_key=os.getenv("GROK_API_KEY"),
-    base_url="https://api.x.ai/v1"
+    base_url="https://api.groq.com/openai/v1"
 )
 
-MODEL = os.getenv("GROK_MODEL", "grok-2-latest")
+MODEL = os.getenv("GROK_MODEL", "llama-3.3-70b-versatile")
 
 
 async def ask_grok(user_message: str, history: list = None) -> str:
     """
-    Отправляет запрос в Grok и возвращает ответ.
+    Отправляет запрос в Groq и возвращает ответ.
     
     user_message — текущее сообщение пользователя
     history — список предыдущих сообщений [{"role": "user/assistant", "content": "..."}]
@@ -39,7 +40,7 @@ async def ask_grok(user_message: str, history: list = None) -> str:
         return response.choices[0].message.content
     
     except Exception as e:
-        print(f"❌ Ошибка Grok API: {e}")
+        print(f"❌ Ошибка Groq API: {e}")
         return "ой, что-то я завис) попробуй ещё раз через пару секунд"            max_tokens=2000,
         )
         return response.choices[0].message.content
