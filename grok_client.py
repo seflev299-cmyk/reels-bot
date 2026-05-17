@@ -14,7 +14,7 @@ client = AsyncOpenAI(
 MODEL = os.getenv("GROK_MODEL", "grok-2-latest")
 
 
-async def ask_grog(user_message: str, history: list = None) -> str:
+async def ask_grok(user_message: str, history: list = None) -> str:
     """
     Отправляет запрос в Grok и возвращает ответ.
     
@@ -40,4 +40,6 @@ async def ask_grog(user_message: str, history: list = None) -> str:
     
     except Exception as e:
         print(f"❌ Ошибка Grok API: {e}")
-        return "ой, что-то я завис) попробуй ещё раз через пару секунд"
+        return "ой, что-то я завис) попробуй ещё раз через пару секунд"            max_tokens=2000,
+        )
+        return response.choices[0].message.content
