@@ -41,6 +41,4 @@ async def ask_grok(user_message: str, history: list = None) -> str:
     
     except Exception as e:
         print(f"❌ Ошибка Groq API: {e}")
-        return "ой, что-то я завис) попробуй ещё раз через пару секунд"            max_tokens=2000,
-        )
-        return response.choices[0].message.content
+        return "ой, что-то я завис) попробуй ещё раз через пару секунд"
