@@ -1,4 +1,5 @@
 # bot.py
+# Главный файл бота — точка входа
 
 import os
 import asyncio
@@ -11,7 +12,7 @@ from aiogram.enums import ParseMode, ChatAction
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
-from grok_client import ask_grok
+from ai_client import ask_ai
 from database import (
     init_db, save_user, save_message,
     get_history, clear_history, get_stats
@@ -22,6 +23,7 @@ load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_ID = int(os.getenv("ADMIN_ID", 0))
+
 MINI_APP_URL = "https://seflev299-cmyk.github.io/reels-producer-ai/"
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s — %(levelname)s — %(message)s")
@@ -33,7 +35,10 @@ dp = Dispatcher()
 
 def get_mini_app_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🥜 Открыть REELS PRODUCER", web_app=WebAppInfo(url=MINI_APP_URL))]
+        [InlineKeyboardButton(
+            text="🥜 Открыть REELS PRODUCER",
+            web_app=WebAppInfo(url=MINI_APP_URL)
+        )]
     ])
 
 
@@ -52,8 +57,7 @@ async def cmd_start(message: Message):
         "но если скинешь текст + описание кадров + скриншоты — разберу всё по полочкам\n\n"
         "если нужно что-то за пределами курса (продажи, воронки, монетизация) — "
         "честно скажу, что во мне этих данных нет\n\n"
-        "👇 жми на кнопку ниже, чтобы открыть <b>REELS PRODUCER.AI</b> — "
-        "там удобный интерфейс для работы\n\n"
+        "👇 жми на кнопку ниже, чтобы открыть <b>REELS PRODUCER.AI</b>\n\n"
         "<i>команды:</i>\n"
         "/app — открыть Mini App\n"
         "/reset — очистить историю диалога\n"
@@ -113,16 +117,21 @@ async def cmd_stats(message: Message):
 async def handle_message(message: Message):
     user_id = message.from_user.id
     user_text = message.text
+
     await save_user(
         user_id=user_id,
         username=message.from_user.username or "",
         first_name=message.from_user.first_name or ""
     )
+
     await bot.send_chat_action(chat_id=message.chat.id, action=ChatAction.TYPING)
+
     history = await get_history(user_id, limit=20)
-    answer = await ask_grok(user_text, history=history)
+    answer = await ask_ai(user_text, history=history)
+
     await save_message(user_id, "user", user_text)
     await save_message(user_id, "assistant", answer)
+
     try:
         await message.answer(answer)
     except Exception as e:
