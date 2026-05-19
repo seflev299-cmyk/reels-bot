@@ -12,7 +12,7 @@ client = AsyncOpenAI(
     base_url="https://openrouter.ai/api/v1"
 )
 
-MODEL = os.getenv("GROK_MODEL", "deepseek/deepseek-chat-v3.1:free")
+MODEL = os.getenv("GROK_MODEL", "google/gemini-2.0-flash-exp:free")
 
 
 async def ask_grok(user_message: str, history: list = None) -> str:
